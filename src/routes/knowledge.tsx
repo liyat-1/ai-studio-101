@@ -56,10 +56,10 @@ function KnowledgePage() {
         {cat !== "questions" && <Button onClick={() => setAdding(true)}><Plus /> Add source</Button>}
       </div>
 
-      <div className="mt-6 grid gap-6 md:grid-cols-[220px_1fr]">
+      <div className="mt-6 grid gap-6 md:grid-cols-[250px_1fr]">
         <nav className="flex gap-1 overflow-x-auto md:flex-col" aria-label="Knowledge categories">
           {KB_CATEGORIES.map((c) => (
-            <button key={c.id} onClick={() => navigate({ search: { cat: c.id }, replace: true })} className={cn("flex items-center justify-between gap-3 whitespace-nowrap rounded-sm px-3 py-2 text-left text-sm", cat === c.id ? "bg-primary-soft font-medium text-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground")}>
+            <button key={c.id} onClick={() => navigate({ search: { cat: c.id }, replace: true })} className={cn("flex items-center justify-between gap-3 whitespace-nowrap rounded-sm px-3 py-2 text-left text-sm md:whitespace-normal", cat === c.id ? "bg-primary-soft font-medium text-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground")}>
               {c.label}<span className={cn("num text-xs", c.id === "questions" && count(c.id) > 0 && "text-warning")}>{count(c.id)}</span>
             </button>
           ))}
