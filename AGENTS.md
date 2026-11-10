@@ -9,5 +9,6 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Keep the AI team directory in a shared presentation component used by the welcome screen and AI Studio route; this preserves a single agent introduction without duplicating campaign functionality.
+- AI Studio is one chat route for every agent (agent chosen via search param), backed by a shared in-memory store in src/lib/studio-store.ts; mock data lives in src/lib/studio-data.ts so permissions can later move to the server.
+- Campaign draft overview, editor and preview are separate routes under /campaigns/draft that read the same store, so edits show everywhere.
 - Define agent identities and responsibilities in a browser-safe catalog; the introductory directory does not simulate live AI conversations.

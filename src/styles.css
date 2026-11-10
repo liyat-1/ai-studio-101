@@ -198,3 +198,11 @@
 .team-introduction { animation: team-enter 350ms ease-out; }
 @keyframes team-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce) { .team-introduction { animation: none; } .team-introduction * { transition: none; } }
+
+/* AI Studio */
+.agent-mark { background: var(--color-card); color: var(--color-foreground); }
+.agent-mark-lead { background: var(--color-sidebar); color: var(--color-sidebar-accent-foreground); border-color: var(--color-sidebar); }
+.studio-fade { animation: team-enter 220ms ease-out; }
+.studio-dots::after { content: "…"; display: inline-block; animation: studio-pulse 1.2s ease-in-out infinite; }
+@keyframes studio-pulse { 50% { opacity: 0.2; } }
+@media (prefers-reduced-motion: reduce) { .studio-fade, .studio-dots::after { animation: none; } }
