@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 /** Plays the script with the browser's speech voice so the prototype has real, audible playback. */
-export function VoicePlayer({ script, voice, compact }: { script: string; voice: string; compact?: boolean }) {
+export function VoicePlayer({ script, voice, compact }: { script: string; voice: string; compact?: boolean | undefined }) {
   const [state, setState] = useState<"idle" | "playing" | "paused">("idle");
   const [elapsed, setElapsed] = useState(0);
   const [rate, setRate] = useState(1);
