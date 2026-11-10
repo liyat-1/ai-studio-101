@@ -23,7 +23,7 @@ export function mockReply(agent: AgentId, text: string): MockReply {
       text: "Let's build a campaign around converting OTA guests into direct bookings. I checked the audience, the available offers, and messaging requirements with your team, then prepared a draft.",
     };
   }
-  return BY_AGENT[agent] ?? BY_AGENT.marketing;
+  return BY_AGENT[agent] ?? (BY_AGENT["marketing"] as MockReply);
 }
 
 export const COLLAB_STEPS: { agent: AgentId; summary: string; detail: string }[] = [
