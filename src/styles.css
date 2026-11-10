@@ -215,9 +215,9 @@
   --orb-gold: oklch(0.82 0.14 80);
   --orb-violet: oklch(0.62 0.17 285);
   --orb-navy: oklch(0.34 0.08 262);
-  --glow-1: oklch(0.8 0.12 250 / 0.55);
-  --glow-2: oklch(0.86 0.09 200 / 0.5);
-  --glow-3: oklch(0.9 0.08 85 / 0.45);
+  --glow-1: oklch(0.86 0.07 250 / 0.45);
+  --glow-2: oklch(0.92 0.04 240 / 0.4);
+  --glow-3: oklch(0.9 0.05 255 / 0.35);
 }
 .orb {
   position: relative; isolation: isolate; color: oklch(1 0 0);
@@ -257,7 +257,7 @@
   border-radius: 9999px;
   background:
     radial-gradient(60% 60% at 30% 25%, oklch(1 0 0 / 0.9) 0, oklch(1 0 0 / 0) 55%),
-    conic-gradient(from 200deg, var(--orb-blue), var(--orb-sky), var(--orb-teal), var(--orb-gold), var(--orb-violet), var(--orb-blue));
+    conic-gradient(from 200deg, var(--orb-blue), var(--orb-sky), var(--orb-navy), var(--orb-blue));
   box-shadow: 0 0 0 6px oklch(1 0 0 / 0.6), 0 20px 50px -12px color-mix(in oklab, var(--orb-blue) 55%, transparent);
   animation: orb-spin 14s linear infinite, orb-float 6s ease-in-out infinite;
 }
@@ -272,8 +272,8 @@
 
 /* voice blob */
 .voice-blob { position: relative; border-radius: 9999px; }
-.voice-blob > i { position: absolute; inset: 0; border-radius: 42% 58% 55% 45% / 48% 42% 58% 52%; background: linear-gradient(140deg, var(--orb-blue), var(--orb-sky), var(--orb-teal)); opacity: 0.55; animation: blob-morph 6s ease-in-out infinite; transform: scale(var(--level, 1)); transition: transform 90ms linear; }
-.voice-blob > i:nth-child(2) { background: linear-gradient(200deg, var(--orb-violet), var(--orb-blue)); animation-duration: 7.5s; animation-direction: reverse; opacity: 0.45; }
+.voice-blob > i { position: absolute; inset: 0; border-radius: 42% 58% 55% 45% / 48% 42% 58% 52%; background: linear-gradient(140deg, var(--orb-blue), var(--orb-sky)); opacity: 0.55; animation: blob-morph 6s ease-in-out infinite; transform: scale(var(--level, 1)); transition: transform 90ms linear; }
+.voice-blob > i:nth-child(2) { background: linear-gradient(200deg, var(--orb-sky), var(--orb-navy)); animation-duration: 7.5s; animation-direction: reverse; opacity: 0.45; }
 .voice-blob > i:nth-child(3) { inset: 14%; background: radial-gradient(60% 60% at 32% 28%, oklch(1 0 0 / 0.9), oklch(1 0 0 / 0) 60%), linear-gradient(140deg, var(--orb-blue), var(--orb-navy)); opacity: 1; animation-duration: 9s; }
 .voice-blob[data-idle="true"] > i { animation-duration: 12s; }
 @keyframes blob-morph {
@@ -283,3 +283,8 @@
 }
 .word-on { background: color-mix(in oklab, var(--primary) 18%, transparent); color: var(--foreground); border-radius: 2px; }
 @media (prefers-reduced-motion: reduce) { .marquee, .glow-field span, .hero-orb, .voice-blob > i { animation: none; } }
+
+.ai-spark { fill: var(--orb-blue); filter: drop-shadow(0 0 0 var(--color-card)) drop-shadow(0 0 1.5px var(--color-card)); }
+.intro-glow { position: absolute; inset: auto 0 0 0; height: 70%; pointer-events: none; background: radial-gradient(60% 70% at 50% 100%, var(--glow-1), transparent 70%); animation: glow-breathe 9s ease-in-out infinite alternate; }
+@keyframes glow-breathe { to { opacity: 0.6; transform: scaleX(1.1); } }
+.composer-shell { background: color-mix(in oklab, var(--color-card) 92%, transparent); backdrop-filter: blur(12px); box-shadow: 0 1px 0 oklch(1 0 0 / 0.7) inset, 0 12px 40px -16px color-mix(in oklab, var(--orb-navy) 30%, transparent); }
