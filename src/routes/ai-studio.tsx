@@ -156,7 +156,7 @@ function Welcome({ agentId, onPick }: { agentId: AgentId; onPick: (t: string) =>
         {a.welcome?.prompts.map((p, i) => {
           const Icon = PROMPT_ICONS[i % PROMPT_ICONS.length]!;
           return (
-            <button key={p} onClick={() => onPick(p)} style={{ animationDelay: `${i * 60}ms` }} className="prompt-card studio-fade group flex flex-col gap-6 rounded-[16px] border bg-card p-4 text-sm shadow-card transition-all hover:-translate-y-0.5 hover:shadow-lift">
+            <button key={p} onClick={() => onPick(p)} style={{ animationDelay: `${i * 60}ms` }} className="prompt-card studio-fade group flex flex-col items-stretch gap-6 text-left rounded-[16px] border bg-card p-4 text-sm shadow-card transition-all hover:-translate-y-0.5 hover:shadow-lift">
               <span className="grid size-8 place-items-center rounded-[10px] bg-primary-soft text-primary"><Icon className="size-4" /></span>
               <span className="flex items-end justify-between gap-3 font-medium">{p}<ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary" /></span>
             </button>

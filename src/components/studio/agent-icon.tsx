@@ -15,8 +15,8 @@ export function AgentMark({ id, size = "md", muted }: { id: string; size?: "xs" 
   return (
     <span className={cn("relative inline-block shrink-0", box, muted && "opacity-50 grayscale")} aria-hidden>
       <span
-        className="block size-full rounded-full ring-1 ring-border"
-        style={{ backgroundImage: `url(${portraits})`, backgroundSize: `${COLS * 100}% ${ROWS * 100}%`, backgroundPosition: `${x}% ${y}%` }}
+        className="block size-full ring-1 ring-border"
+        style={{ borderRadius: 9999, backgroundImage: `url(${portraits})`, backgroundSize: `${COLS * 100}% ${ROWS * 100}%`, backgroundPosition: `${x}% ${y}%` }}
       />
       <svg viewBox="0 0 24 24" className={cn("ai-spark absolute -right-0.5 -bottom-0.5", badge)}>
         <path d="M12 0c.6 6.2 5.8 11.4 12 12-6.2.6-11.4 5.8-12 12C11.4 17.8 6.2 12.6 0 12 6.2 11.4 11.4 6.2 12 0Z" />
