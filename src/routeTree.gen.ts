@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AiStudioRouteImport } from './routes/ai-studio'
 import { Route as AudiencesRouteImport } from './routes/audiences'
+import { Route as KnowledgeRouteImport } from './routes/knowledge'
+import { Route as MarketplaceIndexRouteImport } from './routes/marketplace.index'
+import { Route as MarketplaceAgentIdRouteImport } from './routes/marketplace.$agentId'
 import { Route as CampaignsDraftIndexRouteImport } from './routes/campaigns.draft.index'
 import { Route as CampaignsDraftEditRouteImport } from './routes/campaigns.draft.edit'
 import { Route as CampaignsDraftPreviewRouteImport } from './routes/campaigns.draft.preview'
@@ -29,6 +32,21 @@ const AiStudioRoute = AiStudioRouteImport.update({
 const AudiencesRoute = AudiencesRouteImport.update({
   id: '/audiences',
   path: '/audiences',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeRoute = KnowledgeRouteImport.update({
+  id: '/knowledge',
+  path: '/knowledge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketplaceIndexRoute = MarketplaceIndexRouteImport.update({
+  id: '/marketplace/',
+  path: '/marketplace/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketplaceAgentIdRoute = MarketplaceAgentIdRouteImport.update({
+  id: '/marketplace/$agentId',
+  path: '/marketplace/$agentId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CampaignsDraftIndexRoute = CampaignsDraftIndexRouteImport.update({
@@ -51,6 +69,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai-studio': typeof AiStudioRoute
   '/audiences': typeof AudiencesRoute
+  '/knowledge': typeof KnowledgeRoute
+  '/marketplace/$agentId': typeof MarketplaceAgentIdRoute
+  '/marketplace/': typeof MarketplaceIndexRoute
   '/campaigns/draft/edit': typeof CampaignsDraftEditRoute
   '/campaigns/draft/preview': typeof CampaignsDraftPreviewRoute
   '/campaigns/draft/': typeof CampaignsDraftIndexRoute
@@ -59,6 +80,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ai-studio': typeof AiStudioRoute
   '/audiences': typeof AudiencesRoute
+  '/knowledge': typeof KnowledgeRoute
+  '/marketplace/$agentId': typeof MarketplaceAgentIdRoute
+  '/marketplace': typeof MarketplaceIndexRoute
   '/campaigns/draft/edit': typeof CampaignsDraftEditRoute
   '/campaigns/draft/preview': typeof CampaignsDraftPreviewRoute
   '/campaigns/draft': typeof CampaignsDraftIndexRoute
@@ -68,6 +92,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ai-studio': typeof AiStudioRoute
   '/audiences': typeof AudiencesRoute
+  '/knowledge': typeof KnowledgeRoute
+  '/marketplace/$agentId': typeof MarketplaceAgentIdRoute
+  '/marketplace/': typeof MarketplaceIndexRoute
   '/campaigns/draft/edit': typeof CampaignsDraftEditRoute
   '/campaigns/draft/preview': typeof CampaignsDraftPreviewRoute
   '/campaigns/draft/': typeof CampaignsDraftIndexRoute
@@ -78,6 +105,9 @@ export interface FileRouteTypes {
     | '/'
     | '/ai-studio'
     | '/audiences'
+    | '/knowledge'
+    | '/marketplace/$agentId'
+    | '/marketplace/'
     | '/campaigns/draft/edit'
     | '/campaigns/draft/preview'
     | '/campaigns/draft/'
@@ -86,6 +116,9 @@ export interface FileRouteTypes {
     | '/'
     | '/ai-studio'
     | '/audiences'
+    | '/knowledge'
+    | '/marketplace/$agentId'
+    | '/marketplace'
     | '/campaigns/draft/edit'
     | '/campaigns/draft/preview'
     | '/campaigns/draft'
@@ -94,6 +127,9 @@ export interface FileRouteTypes {
     | '/'
     | '/ai-studio'
     | '/audiences'
+    | '/knowledge'
+    | '/marketplace/$agentId'
+    | '/marketplace/'
     | '/campaigns/draft/edit'
     | '/campaigns/draft/preview'
     | '/campaigns/draft/'
@@ -103,6 +139,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AiStudioRoute: typeof AiStudioRoute
   AudiencesRoute: typeof AudiencesRoute
+  KnowledgeRoute: typeof KnowledgeRoute
+  MarketplaceAgentIdRoute: typeof MarketplaceAgentIdRoute
+  MarketplaceIndexRoute: typeof MarketplaceIndexRoute
   CampaignsDraftEditRoute: typeof CampaignsDraftEditRoute
   CampaignsDraftPreviewRoute: typeof CampaignsDraftPreviewRoute
   CampaignsDraftIndexRoute: typeof CampaignsDraftIndexRoute
@@ -129,6 +168,27 @@ declare module '@tanstack/react-router' {
       path: '/audiences'
       fullPath: '/audiences'
       preLoaderRoute: typeof AudiencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge': {
+      id: '/knowledge'
+      path: '/knowledge'
+      fullPath: '/knowledge'
+      preLoaderRoute: typeof KnowledgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marketplace/': {
+      id: '/marketplace/'
+      path: '/marketplace'
+      fullPath: '/marketplace/'
+      preLoaderRoute: typeof MarketplaceIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marketplace/$agentId': {
+      id: '/marketplace/$agentId'
+      path: '/marketplace/$agentId'
+      fullPath: '/marketplace/$agentId'
+      preLoaderRoute: typeof MarketplaceAgentIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/campaigns/draft/': {
@@ -159,6 +219,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AiStudioRoute: AiStudioRoute,
   AudiencesRoute: AudiencesRoute,
+  KnowledgeRoute: KnowledgeRoute,
+  MarketplaceAgentIdRoute: MarketplaceAgentIdRoute,
+  MarketplaceIndexRoute: MarketplaceIndexRoute,
   CampaignsDraftEditRoute: CampaignsDraftEditRoute,
   CampaignsDraftPreviewRoute: CampaignsDraftPreviewRoute,
   CampaignsDraftIndexRoute: CampaignsDraftIndexRoute,

@@ -9,11 +9,11 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { CURRENT_USER } from "@/lib/studio-data";
 import { HOME_SEARCH } from "@/routes/index";
 
-type NavItem = { label: string; icon: typeof Compass; to?: "/ai-studio" | "/"; match: (p: string) => boolean; soon?: boolean };
+type NavItem = { label: string; icon: typeof Compass; to?: "/ai-studio" | "/" | "/marketplace" | "/knowledge"; match: (p: string) => boolean; soon?: boolean };
 const nav: NavItem[] = [
   { label: "AI Studio", icon: Compass, to: "/ai-studio", match: (p) => p.startsWith("/ai-studio") },
-  { label: "Agent Marketplace", icon: LayoutGrid, match: () => false, soon: true },
-  { label: "Knowledge Base", icon: BookOpen, match: () => false, soon: true },
+  { label: "Agent Marketplace", icon: LayoutGrid, to: "/marketplace", match: (p) => p.startsWith("/marketplace") },
+  { label: "Knowledge Base", icon: BookOpen, to: "/knowledge", match: (p) => p.startsWith("/knowledge") },
   { label: "Campaigns", icon: Megaphone, to: "/", match: (p) => p === "/" || p.startsWith("/campaigns") || p === "/audiences" },
 ];
 
@@ -34,7 +34,10 @@ function Sidebar({ collapsed, path, introOpen, onNav, onToggle }: { collapsed: b
           if (!n.to) return <span key={n.label} title={`${n.label} — coming next`} className={cn(cls, "cursor-default opacity-50")}>{inner}</span>;
           const active = n.to === "/" ? n.match(path) && !introOpen : n.match(path);
           const common = { title: collapsed ? n.label : undefined, onClick: () => onNav(n.to), className: cn(cls, active ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground" : "hover:bg-sidebar-accent/60") };
-          return n.to === "/" ? <Link key={n.label} to="/" search={HOME_SEARCH} {...common}>{inner}</Link> : <Link key={n.label} to="/ai-studio" search={{}} {...common}>{inner}</Link>;
+          if (n.to === "/") return <Link key={n.label} to="/" search={HOME_SEARCH} {...common}>{inner}</Link>;
+          if (n.to === "/marketplace") return <Link key={n.label} to="/marketplace" {...common}>{inner}</Link>;
+          if (n.to === "/knowledge") return <Link key={n.label} to="/knowledge" search={{}} {...common}>{inner}</Link>;
+          return <Link key={n.label} to="/ai-studio" search={{}} {...common}>{inner}</Link>;
         })}
       </nav>
       <div className="mt-auto space-y-1 border-t border-sidebar-border p-2">
