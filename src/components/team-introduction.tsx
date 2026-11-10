@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { agents } from "@/lib/agents";
 import { Link } from "@tanstack/react-router";
-import type { AgentId } from "@/lib/studio-data";
+import { CURRENT_USER, RESTRICTION_NOTE, type AgentId } from "@/lib/studio-data";
+import { canChat, useStudio } from "@/lib/studio-store";
 import { cn } from "@/lib/utils";
 
 const icons = { Compass, TrendingUp, ScanSearch, Fingerprint, ChartNoAxesCombined, ShieldCheck, MessagesSquare, Workflow };
@@ -19,6 +20,8 @@ function Portrait({ agent, large = false }: { agent: Agent; large?: boolean }) {
 
 export function TeamIntroduction({ onContinue }: { onContinue: () => void }) {
   const [selected, setSelected] = useState<Agent | null>(null);
+  const perms = useStudio((st) => st.permissions);
+  const allowed = selected ? canChat(perms, selected.id as AgentId, CURRENT_USER.role) : false;
   return (
     <div className="team-introduction min-h-screen bg-card">
       <header className="flex min-h-14 items-center justify-between gap-3 border-b px-6 lg:px-10">
@@ -49,7 +52,7 @@ export function TeamIntroduction({ onContinue }: { onContinue: () => void }) {
       </div>
       <Dialog open={selected !== null} onOpenChange={(open) => { if (!open) setSelected(null); }}>
         <DialogContent className="max-w-[480px] bg-card p-7">
-          {selected && <><Portrait agent={selected} large /><div><p className="mb-2 text-xs font-medium text-primary">{selected.role}</p><DialogTitle className="text-2xl">{selected.name}</DialogTitle><DialogDescription className="mt-3 leading-relaxed">{selected.description}</DialogDescription></div><div className="border-t pt-4"><h2 className="mb-3 text-xs font-medium text-muted-foreground">WHAT I BRING TO YOUR TEAM</h2><ul className="space-y-3">{selected.tasks.map((task) => <li key={task} className="flex items-center gap-3 text-sm"><Check className="size-4 text-primary" />{task}</li>)}</ul></div><Button asChild className="mt-2"><Link to="/ai-studio" search={{ agent: selected.id as AgentId }} onClick={() => setSelected(null)}>Ask {selected.name} <ArrowRight /></Link></Button></>}
+          {selected && <><Portrait agent={selected} large /><div><p className="mb-2 text-xs font-medium text-primary">{selected.role}</p><DialogTitle className="text-2xl">{selected.name}</DialogTitle><DialogDescription className="mt-3 leading-relaxed">{selected.description}</DialogDescription></div><div className="border-t pt-4"><h2 className="mb-3 text-xs font-medium text-muted-foreground">WHAT I BRING TO YOUR TEAM</h2><ul className="space-y-3">{selected.tasks.map((task) => <li key={task} className="flex items-center gap-3 text-sm"><Check className="size-4 text-primary" />{task}</li>)}</ul></div>{allowed ? <Button asChild className="mt-2"><Link to="/ai-studio" search={{ agent: selected.id as AgentId }} onClick={() => setSelected(null)}>Ask {selected.name} <ArrowRight /></Link></Button> : <p className="mt-2 border bg-muted px-3 py-2 text-sm text-muted-foreground">{RESTRICTION_NOTE}. Your Marketing Manager can still involve this specialist.</p>}</>}
         </DialogContent>
       </Dialog>
     </div>
