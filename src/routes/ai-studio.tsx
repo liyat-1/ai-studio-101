@@ -13,10 +13,13 @@ import { AGENTS, CHANNELS, CHAT_AGENTS, CURRENT_USER, RESTRICTION_NOTE, STEPS, a
 import { actions, canChat, useStudio, type Conversation, type Message, type Mode } from "@/lib/studio-store";
 import { cn } from "@/lib/utils";
 
-type Search = { agent?: AgentId };
+type Search = { agent?: AgentId; prompt?: string };
 
 export const Route = createFileRoute("/ai-studio")({
-  validateSearch: (s: Record<string, unknown>): Search => (typeof s["agent"] === "string" && AGENTS.some((a) => a.id === s["agent"]) ? { agent: s["agent"] as AgentId } : {}),
+  validateSearch: (s: Record<string, unknown>): Search => ({
+    ...(typeof s["agent"] === "string" && AGENTS.some((a) => a.id === s["agent"]) ? { agent: s["agent"] as AgentId } : {}),
+    ...(typeof s["prompt"] === "string" && s["prompt"] ? { prompt: s["prompt"] } : {}),
+  }),
   head: () => ({ meta: [
     { title: "AI Studio — Directful" },
     { name: "description", content: "Work with your hotel's AI marketing team in one workspace: plan campaigns, research guests, and review drafts." },
@@ -74,6 +77,14 @@ function StudioPage() {
       setPending(null);
     }, r.collaborate ? 600 * (COLLAB_STEPS.length + 1) : 900);
   };
+
+  // A question typed on the starter page is sent once, then removed from the address.
+  useEffect(() => {
+    if (!search.prompt) return;
+    actions.newConversation(agentId);
+    send(search.prompt);
+    navigate({ search: { agent: agentId }, replace: true });
+  }, [search.prompt]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const history = (
     <HistoryList agentId={agentId} items={mine} activeId={activeId} onPick={(id) => { actions.openConversation(agentId, id); setHistoryOpen(false); }} onNew={() => { actions.newConversation(agentId); setHistoryOpen(false); }} />
