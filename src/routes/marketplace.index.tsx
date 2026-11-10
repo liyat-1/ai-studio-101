@@ -89,7 +89,7 @@ function Filter({ value, onChange, label, options }: { value: string; onChange: 
   return (
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger className="h-9 w-auto min-w-[140px]" aria-label={label}><SelectValue /></SelectTrigger>
-      <SelectContent><SelectItem value="all">All {label.toLowerCase()}</SelectItem>{options.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+      <SelectContent><SelectItem value="all">{label === "Capability" ? "All capabilities" : label === "Tier" ? "All tiers" : "Any availability"}</SelectItem>{options.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
     </Select>
   );
 }
