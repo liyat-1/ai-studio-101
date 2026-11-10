@@ -1,10 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
-  ArrowUp, Check, ChevronDown, ChevronRight, CircleDashed, History, Lock, Paperclip, Plus, SlidersHorizontal, Sparkles, X,
+  ArrowUp, ArrowUpRight, Check, ChevronDown, Gift, LineChart, Megaphone, Users, CircleDashed, History, Lock, Mic, Plus, Sparkles,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AgentMark } from "@/components/studio/agent-icon";
+import { AttachmentChips, toAttachment, type Attachment } from "@/components/studio/attachments";
+import { VoiceOverlay, useVoiceInput } from "@/components/studio/voice-orb";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -97,8 +99,8 @@ function StudioPage() {
         <SheetContent side="left" className="w-72 p-0"><SheetHeader className="sr-only"><SheetTitle>Conversations</SheetTitle></SheetHeader><div className="flex h-full flex-col">{history}</div></SheetContent>
       </Sheet>
 
-      <section className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4">
+      <section className="chat-canvas relative flex min-w-0 flex-1 flex-col">
+        <header className="flex h-12 shrink-0 items-center gap-2 border-b bg-card/60 px-4 backdrop-blur">
           <button className="rounded-sm p-1.5 hover:bg-muted lg:hidden" onClick={() => setHistoryOpen(true)} aria-label="Conversations"><History className="size-4" /></button>
           <span className="truncate text-sm font-medium">{active ? active.title : "New conversation"}</span>
           <span className="truncate text-xs text-muted-foreground">· {agent.name}</span>
@@ -141,19 +143,25 @@ function HistoryList({ agentId, items, activeId, onPick, onNew }: { agentId: Age
   );
 }
 
+const PROMPT_ICONS = [Megaphone, Users, Gift, LineChart];
 function Welcome({ agentId, onPick }: { agentId: AgentId; onPick: (t: string) => void }) {
   const a = agentById(agentId)!;
   return (
-    <div className="mx-auto flex min-h-full max-w-[760px] flex-col justify-end px-4 pb-6 pt-10 md:justify-center">
-      <div className="flex items-center gap-2 text-xs text-muted-foreground"><AgentMark id={agentId} size="sm" /> {a.name} · {a.short.split(" · ")[0]}</div>
-      <h1 className="mt-4 text-3xl leading-tight font-semibold tracking-tight text-foreground md:text-[40px]">{a.welcome?.headline}</h1>
-      <p className="mt-3 max-w-[560px] text-[15px] text-muted-foreground">{a.welcome?.text}</p>
-      <div className="mt-8 grid gap-px overflow-hidden border bg-border sm:grid-cols-2">
-        {a.welcome?.prompts.map((p) => (
-          <button key={p} onClick={() => onPick(p)} className="group flex items-center justify-between gap-3 bg-card px-4 py-3 text-left text-sm hover:bg-primary-soft">
-            {p}<ChevronRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-          </button>
-        ))}
+    <div className="mx-auto flex min-h-full max-w-[760px] flex-col items-center justify-center px-4 pb-6 pt-10 text-center">
+      <div className="relative"><span className="hero-orb absolute -inset-3 opacity-30 blur-md" aria-hidden /><AgentMark id={agentId} size="xl" /></div>
+      <div className="mt-4 text-xs tracking-[0.18em] text-muted-foreground uppercase">{a.name} · {a.short.split(" · ")[0]}</div>
+      <h1 className="mt-3 text-3xl leading-tight font-semibold tracking-tight text-foreground md:text-[40px]">{a.welcome?.headline}</h1>
+      <p className="mt-3 max-w-[540px] text-[15px] text-muted-foreground">{a.welcome?.text}</p>
+      <div className="mt-8 grid w-full gap-3 text-left sm:grid-cols-2">
+        {a.welcome?.prompts.map((p, i) => {
+          const Icon = PROMPT_ICONS[i % PROMPT_ICONS.length]!;
+          return (
+            <button key={p} onClick={() => onPick(p)} style={{ animationDelay: `${i * 60}ms` }} className="prompt-card studio-fade group flex flex-col items-stretch gap-6 text-left rounded-[16px] border bg-card p-4 text-sm shadow-card transition-all hover:-translate-y-0.5 hover:shadow-lift">
+              <span className="grid size-8 place-items-center rounded-[10px] bg-primary-soft text-primary"><Icon className="size-4" /></span>
+              <span className="flex items-end justify-between gap-3 font-medium">{p}<ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary" /></span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -179,7 +187,7 @@ function Thread({ conv, mode, pending }: { conv: Conversation; mode: Mode; pendi
 }
 
 function MessageView({ m, agent, mode }: { m: Message; agent: AgentId; mode: Mode }) {
-  if (m.from === "user") return <div className="flex justify-end"><div className="max-w-[80%] rounded-md bg-muted px-3.5 py-2 text-sm whitespace-pre-wrap">{m.text}</div></div>;
+  if (m.from === "user") return <div className="flex justify-end"><div className="studio-fade max-w-[80%] rounded-[18px] rounded-br-[6px] bg-sidebar px-4 py-2.5 text-sm whitespace-pre-wrap text-sidebar-accent-foreground shadow-card">{m.text}</div></div>;
   return (
     <div className="flex gap-3">
       <AgentMark id={agent} size="sm" />
@@ -199,7 +207,7 @@ function Collaboration({ done, mode, live }: { done: number; mode: Mode; live?: 
   const [open, setOpen] = useState(false);
   const complete = done >= COLLAB_STEPS.length;
   return (
-    <div className="border bg-card">
+    <div className="overflow-hidden rounded-[14px] border bg-card shadow-card">
       <button onClick={() => mode === "expert" && setOpen((o) => !o)} className={cn("flex w-full items-center gap-2 px-3 py-2 text-left text-xs", mode === "expert" && "hover:bg-muted/60")}>
         <Sparkles className="size-3.5 text-primary" />
         <span className="font-medium">{complete ? "Worked with your AI team" : "Working with your AI team"}</span>
@@ -228,7 +236,7 @@ function Collaboration({ done, mode, live }: { done: number; mode: Mode; live?: 
 function DraftCard() {
   const d = useStudio((s) => s.draft);
   return (
-    <div className="studio-fade border bg-card shadow-card">
+    <div className="studio-fade overflow-hidden rounded-[16px] border bg-card shadow-card">
       <div className="flex items-start justify-between gap-3 border-b px-4 py-3">
         <div>
           <div className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">Campaign draft</div>
@@ -254,40 +262,39 @@ function DraftCard() {
 
 function Composer({ agentId, mode, disabled, onSend, onAgent }: { agentId: AgentId; mode: Mode; disabled: boolean; onSend: (t: string) => void; onAgent: (id: AgentId) => void }) {
   const [text, setText] = useState("");
-  const [files, setFiles] = useState<string[]>([]);
+  const [files, setFiles] = useState<Attachment[]>([]);
+  const [heard, setHeard] = useState("");
   const ref = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const a = agentById(agentId)!;
+  const voice = useVoiceInput(setHeard);
   useEffect(() => { const el = ref.current; if (el) { el.style.height = "auto"; el.style.height = Math.min(el.scrollHeight, 200) + "px"; } }, [text]);
   useEffect(() => { ref.current?.focus(); }, [agentId]);
-  const submit = () => { if (!text.trim() || disabled) return; onSend(files.length ? `${text}\n\n📎 ${files.join(", ")}` : text); setText(""); setFiles([]); };
+  const submit = () => { if (!text.trim() || disabled) return; onSend(files.length ? `${text}\n\n📎 ${files.map((f) => f.name).join(", ")}` : text); setText(""); setFiles([]); };
   return (
-    <div>
-      <div className="mb-2 flex items-center gap-2">
-        <AgentPicker agentId={agentId} onPick={onAgent} />
-        <ModePicker mode={mode} />
-      </div>
-      <div className="composer border bg-card shadow-card transition-shadow focus-within:border-primary/50">
-        {files.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 px-3 pt-3">
-            {files.map((f) => <span key={f} className="flex items-center gap-1 rounded-sm bg-muted px-2 py-1 text-xs">{f}<button aria-label={`Remove ${f}`} onClick={() => setFiles((fs) => fs.filter((x) => x !== f))}><X className="size-3" /></button></span>)}
-          </div>
-        )}
+    <>
+      <VoiceOverlay open={voice.active || !!voice.error && !!heard} level={voice.level} transcript={heard} error={voice.error} agentName={a.name}
+        onCancel={() => { voice.stop(); setHeard(""); }} onDone={() => { voice.stop(); if (heard) setText((t) => (t ? t + " " : "") + heard); setHeard(""); }} />
+      <div className="composer-shell rounded-[20px] border transition-[border-color] focus-within:border-primary/40">
+        <AttachmentChips items={files} onRemove={(id) => setFiles((fs) => fs.filter((f) => f.id !== id))} />
         <textarea
           ref={ref} rows={1} value={text} onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } }}
-          placeholder={`Tell your ${a.name} what you want to achieve…`}
-          className="block w-full resize-none bg-transparent px-4 pt-3.5 pb-2 text-[15px] outline-none placeholder:text-muted-foreground"
+          placeholder={`Ask ${a.name} anything…`}
+          className="block w-full resize-none bg-transparent px-4 pt-4 pb-2 text-[15px] outline-none placeholder:text-muted-foreground"
           aria-label="Message"
         />
         <div className="flex items-center gap-1 px-2 pb-2">
-          <input ref={fileRef} type="file" multiple className="hidden" onChange={(e) => { setFiles((fs) => [...fs, ...Array.from(e.target.files ?? []).map((f) => f.name)]); e.target.value = ""; }} />
-          <button onClick={() => fileRef.current?.click()} aria-label="Attach files" className="rounded-sm p-2 text-muted-foreground hover:bg-muted hover:text-foreground"><Paperclip className="size-4" /></button>
-          <span className="hidden truncate text-xs text-muted-foreground sm:block">{agentId === "marketing" ? "Your AI team can collaborate to help complete this task." : "Enter to send · Shift + Enter for a new line"}</span>
-          <button onClick={submit} disabled={!text.trim() || disabled} aria-label="Send" className="ml-auto grid size-8 place-items-center rounded-sm bg-primary text-primary-foreground transition-opacity hover:bg-primary-hover disabled:opacity-30"><ArrowUp className="size-4" /></button>
+          <input ref={fileRef} type="file" multiple className="hidden" onChange={(e) => { setFiles((fs) => [...fs, ...Array.from(e.target.files ?? []).map(toAttachment)]); e.target.value = ""; }} />
+          <button onClick={() => fileRef.current?.click()} aria-label="Attach files" className="grid size-8 place-items-center rounded-full border text-muted-foreground hover:bg-muted hover:text-foreground"><Plus className="size-4" /></button>
+          <AgentPicker agentId={agentId} onPick={onAgent} />
+          <ModePicker mode={mode} />
+          <button onClick={() => { setHeard(""); void voice.start(); }} aria-label="Talk to your agent" className="ml-auto grid size-8 place-items-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"><Mic className="size-4" /></button>
+          <button onClick={submit} disabled={!text.trim() || disabled} aria-label="Send" className="grid size-8 place-items-center rounded-full bg-primary text-primary-foreground transition-opacity hover:bg-primary-hover disabled:opacity-30"><ArrowUp className="size-4" /></button>
         </div>
       </div>
-    </div>
+      <p className="mt-2 text-center text-[11px] text-muted-foreground">{agentId === "marketing" ? "Your AI team can collaborate to complete this task. Nothing is sent to guests without your approval." : "Enter to send · Shift + Enter for a new line"}</p>
+    </>
   );
 }
 
@@ -297,8 +304,8 @@ function AgentPicker({ agentId, onPick }: { agentId: AgentId; onPick: (id: Agent
   const list = useMemo(() => CHAT_AGENTS.map((x) => ({ ...x, ok: canChat(perms, x.id, CURRENT_USER.role) })), [perms]);
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex h-8 items-center gap-2 rounded-sm border bg-card px-2 text-sm font-medium hover:bg-muted data-[state=open]:bg-muted">
-        <AgentMark id={agentId} size="sm" /> {a.name} <ChevronDown className="size-3.5 text-muted-foreground" />
+      <DropdownMenuTrigger className="flex h-8 max-w-[200px] items-center gap-1.5 rounded-full px-1.5 pr-2.5 text-sm font-medium hover:bg-muted data-[state=open]:bg-muted">
+        <AgentMark id={agentId} size="xs" /> <span className="truncate">{a.name}</span> <ChevronDown className="size-3.5 text-muted-foreground" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" side="top" className="w-[340px] p-1">
         <DropdownMenuLabel className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">Chat with</DropdownMenuLabel>
@@ -326,8 +333,8 @@ function ModePicker({ mode }: { mode: Mode }) {
   ];
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex h-8 items-center gap-1.5 rounded-sm border bg-card px-2 text-sm hover:bg-muted data-[state=open]:bg-muted">
-        <SlidersHorizontal className="size-3.5 text-muted-foreground" /> {mode === "simple" ? "Simple" : "Expert"} <ChevronDown className="size-3.5 text-muted-foreground" />
+      <DropdownMenuTrigger className="flex h-8 items-center gap-1 rounded-full px-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground data-[state=open]:bg-muted">
+        {mode === "simple" ? "Simple" : "Expert"} <ChevronDown className="size-3.5 text-muted-foreground" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" side="top" className="w-[300px] p-1">
         <DropdownMenuLabel className="text-[11px] font-medium tracking-wide text-muted-foreground uppercase">Experience</DropdownMenuLabel>
