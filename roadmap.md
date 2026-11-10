@@ -1,9 +1,10 @@
-# Drip Campaigns — remaining work
+# Directful AI Studio — Phase One
 
-- [x] AI Studio: clean team introduction with selectable agents, preserving the existing design system
-
-- [x] Results pop-up: message performance comparison, key insights, text/email mockups, guest funnel (verified in preview)
-- [ ] Card polish: Maya Chen avatar on cards, make cards livelier per design system
-- [ ] Create-campaign flow: audience picker + create-audience steps
-- [ ] Guest Activity (in results pop-up): dropdown filter instead of tabs — blocked, waiting on user's extra columns + screenshot
+- [x] Results pop-up on drip campaigns
+- [ ] AI Studio: one Ask Agent workspace, agent selector, Simple/Expert, per-agent history, collaboration, restricted agents
+- [ ] Agent Marketplace + Details & Settings (permissions, instructions, knowledge access, activity)
+- [ ] Knowledge Base (property, brand kit, policies, documents, guest questions)
+- [ ] Campaign draft overview, content editor (sequence + channel), unified preview, approval step
+- [ ] Card polish: Maya Chen avatar on cards — waiting on user
+- [ ] Guest Activity dropdown filter — blocked, waiting on user's extra columns + screenshot
 - [ ] Table view: new columns — blocked, waiting on user's column list
