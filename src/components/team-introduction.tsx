@@ -15,12 +15,11 @@ const IDEAS = ["Win back guests who booked through OTAs", "Plan a Genna weekend 
 function Pill({ agent, onOpen }: { agent: Agent; onOpen: (a: Agent) => void }) {
   const [first, ...rest] = agent.name.split(" ");
   return (
-    <button onClick={() => onOpen(agent)} className="group flex shrink-0 items-center gap-3 rounded-[14px] border bg-card/90 py-3 pl-3 pr-6 text-left shadow-card backdrop-blur transition-all hover:-translate-y-0.5 hover:shadow-lift">
+    <button onClick={() => onOpen(agent)} className="group flex shrink-0 items-center gap-3 rounded-[14px] border bg-card py-3.5 pl-3.5 pr-7 text-left shadow-card backdrop-blur transition-all hover:-translate-y-0.5 hover:shadow-lift">
       <AgentMark id={agent.id} size="lg" />
       <span className="text-[17px] whitespace-nowrap">
         <span className="font-medium text-foreground">{first}</span> <span className="text-muted-foreground">{rest.join(" ")}</span>
-        <span className="block text-xs text-muted-foreground">{agent.role}</span>
-      </span>
+        </span>
     </button>
   );
 }
@@ -35,18 +34,19 @@ export function TeamIntroduction({ onContinue }: { onContinue: () => void }) {
 
   return (
     <div className="team-introduction relative flex min-h-screen flex-col overflow-hidden bg-background">
-      <div className="glow-field" aria-hidden><span /><span /><span /></div>
+      <div className="intro-glow" aria-hidden />
 
       <header className="relative z-10 flex h-14 items-center justify-between px-6 lg:px-10">
         <span className="text-xs tracking-[0.2em] text-muted-foreground uppercase">The Meridian Hotel · AI Studio</span>
         <Button variant="ghost" size="sm" onClick={onContinue}>Skip to campaigns <ArrowRight /></Button>
       </header>
 
-      <section className="relative z-10 mx-auto w-full max-w-[1120px] px-6 pt-8 lg:px-10 lg:pt-14">
-        <h1 className="max-w-[720px] text-[44px] leading-[1.05] font-semibold tracking-tight sm:text-6xl">
+      <section className="relative z-10 mx-auto w-full max-w-[880px] px-6 pt-10 text-center lg:pt-16">
+        <span className="mx-auto mb-6 flex w-fit items-center gap-2 rounded-full border bg-card px-3 py-1 text-xs text-muted-foreground shadow-card"><span className="size-1.5 rounded-full bg-success" /> Your AI team is online</span>
+        <h1 className="mx-auto max-w-[760px] text-[40px] leading-[1.05] font-semibold tracking-tight sm:text-6xl">
           Agents that work <span className="text-muted-foreground">while your hotel sleeps.</span>
         </h1>
-        <p className="mt-5 max-w-[520px] text-lg text-foreground/80">Eight AI teammates, one goal: more direct bookings and guests who come back.</p>
+        <p className="mx-auto mt-5 max-w-[520px] text-lg text-foreground/80">Eight AI teammates, one goal: more direct bookings and guests who come back.</p>
       </section>
 
       <section className="marquee-mask relative z-10 mt-10 space-y-4 lg:mt-14" aria-label="Your AI team">
@@ -54,7 +54,7 @@ export function TeamIntroduction({ onContinue }: { onContinue: () => void }) {
           const loop = [...row, ...row, ...row, ...row];
           return (
             <div key={i} className="marquee-row overflow-hidden py-1">
-              <div className={i === 1 ? "marquee marquee-reverse" : i === 2 ? "marquee marquee-slow" : "marquee"} style={{ marginLeft: i === 1 ? -120 : 0 }}>
+              <div className={i === 1 ? "marquee marquee-reverse" : i === 2 ? "marquee marquee-slow" : "marquee"} style={{ marginLeft: i === 1 ? -160 : i === 2 ? -60 : 0 }}>
                 {loop.map((a, j) => <Pill key={`${a.id}-${j}`} agent={a} onOpen={setSelected} />)}
               </div>
             </div>
@@ -65,7 +65,7 @@ export function TeamIntroduction({ onContinue }: { onContinue: () => void }) {
       <section className="relative z-10 mx-auto mt-auto w-full max-w-[720px] px-6 pb-10 pt-12">
         <form onSubmit={(e) => { e.preventDefault(); start(text); }} className="rounded-[18px] border bg-card/90 p-2 shadow-lift backdrop-blur">
           <div className="flex items-center gap-3 px-2">
-            <span className="hero-orb size-8 shrink-0" aria-hidden />
+            <span className="hero-orb size-7 shrink-0" aria-hidden />
             <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Start chatting with your AI team…" aria-label="Ask your AI team" className="h-12 flex-1 bg-transparent text-[15px] outline-none placeholder:text-muted-foreground" />
             <button type="submit" aria-label="Start" className="grid size-10 place-items-center rounded-[12px] bg-sidebar text-sidebar-accent-foreground transition-transform hover:scale-105"><ArrowUp className="size-4" /></button>
           </div>
