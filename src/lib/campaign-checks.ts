@@ -10,7 +10,7 @@ const HOTEL = "The Meridian";
 
 export function contentChecks(step: StepContent, channel: Channel, stepIndex: number): Check[] {
   const has = (s: string) => s.includes(HOTEL);
-  const pass = (ok: boolean, label: string, hint?: string): Check => ({ label, status: ok ? "Passed" : "Needs attention", hint: ok ? undefined : hint });
+  const pass = (ok: boolean, label: string, hint?: string): Check => (ok || !hint ? { label, status: ok ? "Passed" : "Needs attention" } : { label, status: "Needs attention", hint });
   const na = (label: string): Check => ({ label, status: "Not applicable" });
   const first = stepIndex === 0;
 

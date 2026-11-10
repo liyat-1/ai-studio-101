@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   ArrowUp, Check, ChevronDown, ChevronRight, CircleDashed, History, Lock, Paperclip, Plus, SlidersHorizontal, Sparkles, X,
 } from "lucide-react";
@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 type Search = { agent?: AgentId };
 
 export const Route = createFileRoute("/ai-studio")({
-  validateSearch: (s: Record<string, unknown>): Search => (typeof s.agent === "string" && AGENTS.some((a) => a.id === s.agent) ? { agent: s.agent as AgentId } : {}),
+  validateSearch: (s: Record<string, unknown>): Search => (typeof s["agent"] === "string" && AGENTS.some((a) => a.id === s["agent"]) ? { agent: s["agent"] as AgentId } : {}),
   head: () => ({ meta: [
     { title: "AI Studio — Directful" },
     { name: "description", content: "Work with your hotel's AI marketing team in one workspace: plan campaigns, research guests, and review drafts." },
@@ -70,7 +70,7 @@ function StudioPage() {
     }
     setTimeout(() => {
       if (r.kind === "campaign") actions.generateDraft();
-      actions.reply(convId, { kind: r.kind, text: r.text, items: r.items });
+      actions.reply(convId, { kind: r.kind, text: r.text, ...(r.items ? { items: r.items } : {}) });
       setPending(null);
     }, r.collaborate ? 600 * (COLLAB_STEPS.length + 1) : 900);
   };
@@ -231,11 +231,7 @@ function DraftCard() {
         <div><dt className="text-muted-foreground">Sequence</dt><dd className="mt-0.5 text-sm">{STEPS.length} messages</dd></div>
         <div><dt className="text-muted-foreground">Offer</dt><dd className="mt-0.5 text-sm">{d.offer}</dd></div>
       </dl>
-      <div className="flex flex-wrap gap-2 border-t px-4 py-3">
-        <Button asChild size="sm"><Link to="/campaigns/draft">Review draft</Link></Button>
-        <Button asChild size="sm" variant="outline"><Link to="/campaigns/draft/edit" search={{}}>Edit</Link></Button>
-        <Button asChild size="sm" variant="ghost"><Link to="/campaigns/draft/preview" search={{}}>Preview</Link></Button>
-      </div>
+      <p className="border-t px-4 py-3 text-xs text-muted-foreground">Nothing is sent until you review and approve this draft.</p>
     </div>
   );
 }
