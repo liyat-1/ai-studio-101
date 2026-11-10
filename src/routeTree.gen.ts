@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AiStudioRouteImport } from './routes/ai-studio'
 import { Route as AudiencesRouteImport } from './routes/audiences'
+import { Route as CampaignsDraftIndexRouteImport } from './routes/campaigns.draft.index'
+import { Route as CampaignsDraftEditRouteImport } from './routes/campaigns.draft.edit'
+import { Route as CampaignsDraftPreviewRouteImport } from './routes/campaigns.draft.preview'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +31,81 @@ const AudiencesRoute = AudiencesRouteImport.update({
   path: '/audiences',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CampaignsDraftIndexRoute = CampaignsDraftIndexRouteImport.update({
+  id: '/campaigns/draft/',
+  path: '/campaigns/draft/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CampaignsDraftEditRoute = CampaignsDraftEditRouteImport.update({
+  id: '/campaigns/draft/edit',
+  path: '/campaigns/draft/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CampaignsDraftPreviewRoute = CampaignsDraftPreviewRouteImport.update({
+  id: '/campaigns/draft/preview',
+  path: '/campaigns/draft/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai-studio': typeof AiStudioRoute
   '/audiences': typeof AudiencesRoute
+  '/campaigns/draft/edit': typeof CampaignsDraftEditRoute
+  '/campaigns/draft/preview': typeof CampaignsDraftPreviewRoute
+  '/campaigns/draft/': typeof CampaignsDraftIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ai-studio': typeof AiStudioRoute
   '/audiences': typeof AudiencesRoute
+  '/campaigns/draft/edit': typeof CampaignsDraftEditRoute
+  '/campaigns/draft/preview': typeof CampaignsDraftPreviewRoute
+  '/campaigns/draft': typeof CampaignsDraftIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ai-studio': typeof AiStudioRoute
   '/audiences': typeof AudiencesRoute
+  '/campaigns/draft/edit': typeof CampaignsDraftEditRoute
+  '/campaigns/draft/preview': typeof CampaignsDraftPreviewRoute
+  '/campaigns/draft/': typeof CampaignsDraftIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/ai-studio' | '/audiences'
+  fullPaths:
+    | '/'
+    | '/ai-studio'
+    | '/audiences'
+    | '/campaigns/draft/edit'
+    | '/campaigns/draft/preview'
+    | '/campaigns/draft/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ai-studio' | '/audiences'
-  id: '__root__' | '/' | '/ai-studio' | '/audiences'
+  to:
+    | '/'
+    | '/ai-studio'
+    | '/audiences'
+    | '/campaigns/draft/edit'
+    | '/campaigns/draft/preview'
+    | '/campaigns/draft'
+  id:
+    | '__root__'
+    | '/'
+    | '/ai-studio'
+    | '/audiences'
+    | '/campaigns/draft/edit'
+    | '/campaigns/draft/preview'
+    | '/campaigns/draft/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AiStudioRoute: typeof AiStudioRoute
   AudiencesRoute: typeof AudiencesRoute
+  CampaignsDraftEditRoute: typeof CampaignsDraftEditRoute
+  CampaignsDraftPreviewRoute: typeof CampaignsDraftPreviewRoute
+  CampaignsDraftIndexRoute: typeof CampaignsDraftIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +131,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AudiencesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/campaigns/draft/': {
+      id: '/campaigns/draft/'
+      path: '/campaigns/draft'
+      fullPath: '/campaigns/draft/'
+      preLoaderRoute: typeof CampaignsDraftIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/campaigns/draft/edit': {
+      id: '/campaigns/draft/edit'
+      path: '/campaigns/draft/edit'
+      fullPath: '/campaigns/draft/edit'
+      preLoaderRoute: typeof CampaignsDraftEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/campaigns/draft/preview': {
+      id: '/campaigns/draft/preview'
+      path: '/campaigns/draft/preview'
+      fullPath: '/campaigns/draft/preview'
+      preLoaderRoute: typeof CampaignsDraftPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +159,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AiStudioRoute: AiStudioRoute,
   AudiencesRoute: AudiencesRoute,
+  CampaignsDraftEditRoute: CampaignsDraftEditRoute,
+  CampaignsDraftPreviewRoute: CampaignsDraftPreviewRoute,
+  CampaignsDraftIndexRoute: CampaignsDraftIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
