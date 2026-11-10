@@ -18,7 +18,7 @@ function Pill({ agent, onOpen }: { agent: Agent; onOpen: (a: Agent) => void }) {
     <button onClick={() => onOpen(agent)} className="group flex shrink-0 items-center gap-3 rounded-[14px] border bg-card py-3.5 pl-3.5 pr-7 text-left shadow-card backdrop-blur transition-all hover:-translate-y-0.5 hover:shadow-lift">
       <AgentMark id={agent.id} size="lg" />
       <span className="text-[17px] whitespace-nowrap">
-        <span className="font-medium text-foreground">{first}</span> <span className="text-muted-foreground">{rest.join(" ")}</span>
+        <span className="text-foreground">{[first, ...rest].join(" ").replace(/ Agent$/, "")}</span> <span className="text-muted-foreground">Agent</span>
         </span>
     </button>
   );
