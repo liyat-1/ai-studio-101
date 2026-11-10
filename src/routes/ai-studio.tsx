@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   ArrowUp, Check, ChevronDown, ChevronRight, CircleDashed, History, Lock, Paperclip, Plus, SlidersHorizontal, Sparkles, X,
 } from "lucide-react";
@@ -231,7 +231,12 @@ function DraftCard() {
         <div><dt className="text-muted-foreground">Sequence</dt><dd className="mt-0.5 text-sm">{STEPS.length} messages</dd></div>
         <div><dt className="text-muted-foreground">Offer</dt><dd className="mt-0.5 text-sm">{d.offer}</dd></div>
       </dl>
-      <p className="border-t px-4 py-3 text-xs text-muted-foreground">Nothing is sent until you review and approve this draft.</p>
+      <div className="flex flex-wrap items-center gap-2 border-t px-4 py-3">
+        <Button asChild size="sm"><Link to="/campaigns/draft">Review draft</Link></Button>
+        <Button asChild size="sm" variant="outline"><Link to="/campaigns/draft/edit" search={{}}>Edit</Link></Button>
+        <Button asChild size="sm" variant="ghost"><Link to="/campaigns/draft/preview" search={{}}>Preview</Link></Button>
+        <span className="ml-auto text-xs text-muted-foreground">Nothing is sent until you approve.</span>
+      </div>
     </div>
   );
 }
